@@ -45,7 +45,7 @@ def set_department():
         department.save()
 
 
-def get_users_timetable(request):
+def set_users_timetable(request):
     user = request.user
     while user.credit > 18:
         lecture = Lecture.objects.filter(
@@ -57,5 +57,6 @@ def get_users_timetable(request):
                 user.lecture.add(lecture)
                 lecture.current_user += 1
     user.save()
-    
-    
+
+
+

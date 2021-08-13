@@ -15,7 +15,7 @@ class Department(models.Model):
 
 
 # 분반
-class Divsion(models.Model):
+class Division(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=150, allow_unicode=True, unique=True)
 
@@ -30,7 +30,7 @@ class Lecture(models.Model):
     time = models.ManyToManyField(Time, blank=True, null=True)
     grade = models.PositiveIntegerField()
     division = models.ForeignKey(
-        Divsion, on_delete=models.CASCADE, blank=True, null=True)
+        Division, on_delete=models.CASCADE, blank=True, null=True)
 
 
 class CustomUser(models.Model):
