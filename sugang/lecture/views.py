@@ -7,7 +7,7 @@ import pandas as pd
 # Create your views here.
 def set_time_table():
     weeks = ['월', '화', '수', '목', '금']
-    day_times = range(1, 9)
+    day_times = range(1, 10)
     day_parts = ['A', 'B']
     pk = 1
     for week in weeks:
@@ -20,6 +20,26 @@ def set_time_table():
                 t.save()
                 pk += 1
     return redirect('/')
+
+
+def set_department():
+    departments = ["교양학부",
+                   "기계공학부",
+                   "디자인ㆍ건축공학부",
+                   "메카트로닉스공학부",
+                   "산업경영학부",
+                   "에너지신소재화학공학부",
+                   "융합학과",
+                   "전기ㆍ전자ㆍ통신공학부",
+                   "컴퓨터공학부",
+                   "HRD학과"
+                   ]
+    for pk, d in enumerate(departments):
+        department = Department.objects.create()
+        department.name = d
+        department.slug = slugify(pk)
+        department.save()
+
 
 
 
