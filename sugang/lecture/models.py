@@ -1,7 +1,11 @@
+import django
+from django.core.wsgi import get_wsgi_application
 from django.db import models
 
 
 # 수강시간
+
+
 class Time(models.Model):
     week = models.CharField(max_length=100)
     day = models.CharField(max_length=100)
