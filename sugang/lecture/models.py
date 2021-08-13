@@ -1,7 +1,9 @@
 import django
 from django.core.wsgi import get_wsgi_application
 from django.db import models
-
+import os
+os.environ.get("DJANGO_SETTINGS_MODULE")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
 # 수강시간
 

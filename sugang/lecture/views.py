@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.db.models import Q
 from .models import Lecture, Time, Department, CustomUser
 import pandas as pd
+import numpy as np
 from django.utils.text import slugify
 
 
@@ -46,6 +47,16 @@ def set_department():
         department.save()
 
 
+def stanbyPage(request):
+
+    return render(request, "stanbyPage")
+
+
+def countDown(request):
+
+    return render(request, "countDown")
+
+
 def set_users_timetable(request):
     user = request.user
     while user.credit > 18:
@@ -58,3 +69,39 @@ def set_users_timetable(request):
                 user.lecture.add(lecture)
                 lecture.current_user += 1
     user.save()
+
+
+def get_rates_and_candidates(request):
+    current_user = request.user
+    lectures = current_user.lecture
+    lecture_count = len(lectures)
+    cr = np.random.normal(0, 4, size=lecture_count)
+    candidates = []
+    rates = []
+
+    for i, lecture in enumerate(lectures.iterator()):
+        candidates.append(
+            int(cr[i] * lecture.current_user))
+        rates.append(
+            0 if cr[i] == 0 else 1 / cr[i]
+        )
+
+    return rates, candidates
+
+
+def lander(request):
+    context = dict()
+    if request.user.is_authenticated:
+        current_user = request.user
+        # rates는 lecture에 대한 초당 클릭수 ( 1 / 경쟁률 )
+        # candidates는 0, 4 사이의 정규분포
+        rates, candidates = get_rates_and_candidates(request)
+        context["rates"] = rates
+        context["candidates"] = candidates
+
+    return render(
+        request,
+        # url
+        "",
+        context
+    )
