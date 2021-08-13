@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="kr">
 <head>
@@ -15,10 +16,6 @@
     <style>
         h1 {
             position: relative;
-            width: 1014px;
-            height: 185px;
-            left: 423px;
-            top: 212px;
 
             font-family: "Black Han Sans";
             font-style: normal;
@@ -26,14 +23,19 @@
             font-size: 144px;
             line-height: 180px;
             text-align: center;
-
+            text-align: center;
+            display: block;
             color: #000000;
+            margin-top: 100px;
 
             text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         }
     </style>
+
 </head>
 <body>
     <h1>수강신청 가즈아</h1>
+    <img src="{% static '/img/1.png' %}" , alt="...">
+    <img src="{% static '/img/2.png' %}" , alt="...">
 </body>
 </html>

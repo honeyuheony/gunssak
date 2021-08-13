@@ -4,6 +4,7 @@ from .models import Lecture, Time, Department, CustomUser, Division
 import pandas as pd
 import numpy as np
 from django.utils.text import slugify
+
 import csv
 fist = True
 
@@ -70,6 +71,11 @@ def set_lecture():
 
 
 
+def main(request):
+    return render(request, 'main.html')
+
+
+
 def set_time_table():
     weeks = ['월', '화', '수', '목', '금']
     day_times = range(1, 10)
@@ -106,10 +112,12 @@ def set_department():
         department.name = d
         department.slug = slugify(pk)
         department.save()
- 
+
+
 def stanbyPage(request):
 
-    return render(request, "stanbyPage") 
+    return render(request, "stanbyPage")
+
 
 def countDown(request):
 
@@ -128,7 +136,6 @@ def set_users_timetable(request):
                 user.lecture.add(lecture)
                 lecture.current_user += 1
     user.save()
-
 
 
 def get_rates_and_candidates(request):
