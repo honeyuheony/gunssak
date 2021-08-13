@@ -81,6 +81,14 @@ def set_department():
         department.name = d
         department.slug = slugify(pk)
         department.save()
+ 
+def stanbyPage(request):
+
+    return render(request, "stanbyPage") 
+
+def countDown(request):
+
+    return render(request, "countDown")
 
 
 def set_users_timetable(request):
