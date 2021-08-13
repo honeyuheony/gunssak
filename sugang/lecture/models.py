@@ -8,7 +8,6 @@ class Time(models.Model):
     slug = models.SlugField(max_length=150, allow_unicode=True, unique=True)
 
 
-
 # 학부
 class Department(models.Model):
     name = models.CharField(max_length=100)
@@ -16,21 +15,22 @@ class Department(models.Model):
 
 
 # 분반
-class Divsion(models,Model):
+class Divsion(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=150, allow_unicode=True, unique=True)
 
 
-
 # Create your models here.
 class Lecture(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=100)
     code = models.TextField()
     semester = models.PositiveIntegerField()
     department = models.ManyToManyField(Department, blank=True, null=True)
     credit = models.PositiveIntegerField(default=0)
     time = models.ManyToManyField(Time, blank=True, null=True)
-    grade = model.PositiveIntegerField()
+    grade = models.PositiveIntegerField()
+    division = models.ForeignKey(
+        Divsion, on_delete=models.CASCADE, blank=True, null=True)
 
 
 class CustomUser(models.Model):
@@ -38,5 +38,6 @@ class CustomUser(models.Model):
     name = models.CharField(max_length=100)
     time = models.ManyToManyField(Time, blank=True, null=True)
     lecture = models.ManyToManyField(Lecture, blank=True, null=True)
-    department = models.ForeignKey(Department, blank=True, null=True)
+    department = models.ForeignKey(
+        Department, on_delete=models.CASCADE, blank=True, null=True)
     grade = models.PositiveIntegerField()

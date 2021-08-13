@@ -3,6 +3,8 @@ from lecture.models import *
 import pandas as pd
 
 # Create your views here.
+
+
 def set_time_table():
     weeks = ['mon', 'tue', 'wen', 'thu', 'fri']
     for i, week in enumerate(weeks):
