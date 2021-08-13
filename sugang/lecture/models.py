@@ -30,7 +30,7 @@ class Lecture(models.Model):
     department = models.ManyToManyField(Department, blank=True, null=True)
     credit = models.PositiveIntegerField(default=0)
     time = models.ManyToManyField(Time, blank=True, null=True)
-    grade = model.PositiveIntegerField()
+    grade = models.PositiveIntegerField()
 
 
 class CustomUser(models.Model):
