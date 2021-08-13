@@ -30,13 +30,15 @@ class Lecture(models.Model):
     department = models.ManyToManyField(Department, blank=True, null=True)
     credit = models.PositiveIntegerField(default=0)
     time = models.ManyToManyField(Time, blank=True, null=True)
+    division = models.ForeignKey(Divsion)
     grade = model.PositiveIntegerField()
+    max_user = models.PositiveIntegerField()
+    current_user = models.PositiveIntegerField(default=0)
 
 
 class CustomUser(models.Model):
     credit = models.PositiveIntegerField(default=0)
     name = models.CharField(max_length=100)
-    time = models.ManyToManyField(Time, blank=True, null=True)
     lecture = models.ManyToManyField(Lecture, blank=True, null=True)
     department = models.ForeignKey(Department, blank=True, null=True)
     grade = models.PositiveIntegerField()
