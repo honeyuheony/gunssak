@@ -2,8 +2,6 @@ import django
 from django.core.wsgi import get_wsgi_application
 from django.db import models
 import os
-os.environ.get("DJANGO_SETTINGS_MODULE")
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
 # 수강시간
 
@@ -30,7 +28,7 @@ class Division(models.Model):
 class Lecture(models.Model):
     name = models.CharField(max_length=100)
     code = models.TextField()
-    semester = models.PositiveIntegerField()
+    semester = models.PositiveIntegerField(null=True)
     department = models.ManyToManyField(Department, blank=True, null=True)
     credit = models.PositiveIntegerField(default=0)
     time = models.ManyToManyField(Time, blank=True, null=True)

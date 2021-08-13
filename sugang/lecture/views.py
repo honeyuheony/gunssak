@@ -1,67 +1,92 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
-from .models import Lecture, Time, Department, CustomUser
+from .models import Lecture, Time, Department, CustomUser, Division
 import pandas as pd
 import numpy as np
 from django.utils.text import slugify
-
 import csv
+fist = True
 
 CSV_PATH = './data.csv'  # 3. csv 파일 경로
 # Create your views here.
-with open(CSV_PATH, newline='') as csvfile:  # 4. newline =''
-    data_reader = csv.DictReader(csvfile)
-    day = []
-    for row in data_reader:
-        time = row['time']
-        time = time.split(",")
-        dayStart = ""
-        dayEnd = ""
-        for t in time:
-            dayStart = t[0:1] + t[1:3]
-            dayEnd = t[0:1] + t[5:7]
-            for i in range(int(dayStart[1:3]), int(dayEnd[1:3] + 1)):
-                day.append(i + "A")
-                day.append(i + "B")
-            if dayStart[3:4] == "B":
-                day.remove(dayStart[1:3] + "A")
-            if dayEnd[3:4] == "A":
-                day.remove(dayEnd[1:3] + "B")
-        lecture = Lecture.objects.create(
-            name=row['name'],
-            code=row['code'],
-            semester=row['semester'],
-            department=row['department'],
-            division=row['division'],
-            credit=row['credit'],
-            time=row['time'],
-            capacity=row['capacity'],
-            grade=row['grade']
+def set_lecture():
+    with open(CSV_PATH, newline='', encoding="euc-kr") as csvfile:  # 4. newline =''
+        data_reader = csv.DictReader(csvfile)
+        print(data_reader)
+        for row in data_reader:
+            time = row['time']
+            time = time.split(",")
+            dayStart = ""
+            dayEnd = ""
+            print(row["division"])
+            day = []
+            try:
+                for t in time:
+                    dayStart = t[0:1] + t[1:3]
+                    dayEnd = t[0:1] + t[5:7]
+                    for i in range(int(dayStart[2:3]), int(dayEnd[2:3]) + 1):
+                        day.append(dayStart[0] + str(i) + "a")
+                        day.append(dayStart[0] + str(i) + "b")
+                    if dayStart[3:4] == "b":
+                        day.remove(dayStart[1:3] + "a")
+                    if dayEnd[3:4] == "a":
+                        day.remove(dayEnd[1:3] + "b")
+            except:
+                continue
+            lecture = Lecture.objects.create(
+                name = row['name'],
+                code = row['code'],
+                semester = int(row['semester'][0]),
+                credit = row['credit'],
+                grade = row['grade'],
+            )
+            # lecture.division = row['division'],
+            # lecture.name = row['name'],
+            # lecture.code = row['code'],
+            # lecture.semester = int(row['semester']),
+            # lecture.credit = row['credit'],
+            # lecture.time = row['time'],
+            # lecture.capacity = row['capacity'],
+            # lecture.grade = row['grade']
+            department, is_department = Department.objects.get_or_create(name=row['department'].strip())
+            if is_department:
+                department.slug = slugify(row["department"])
+                department.save()
+            lecture.department.add(department)
+            try:
+                for d in day:
+                    print(d.lower())
+                    time = Time.objects.get(slug=d.lower().strip())
+                    lecture.time.add(time)
+            except:
+                continue
+            division, is_division = Division.objects.get_or_create(name=row['division'])
+            print(row["division"])
+            if is_division:
+                division.slug = slugify(row["division"])
+                division.save()
+            lecture.division = division
+            lecture.save()
 
-            # 6
-        )
-
-        for d in day:
-            time = Time.objects.get(slug=d)
-            lecture.time.add(time)
 
 
 def set_time_table():
     weeks = ['월', '화', '수', '목', '금']
     day_times = range(1, 10)
-    day_parts = ['A', 'B']
+    day_parts = ['a', 'b']
     pk = 1
     for week in weeks:
         for day_time in day_times:
             for day_part in day_parts:
-                t = Time.objects.create()
-                t.week = week
-                t.day = (day_time + day_part)
-                slug = week + day_time + day_part
-                t.slug = slugify(slug, allow_unicode=True)
+                slug = week + str(day_time) + day_part
+                t = Time.objects.create(
+                    week=week,
+                    slug=slugify(slug, allow_unicode=True),
+                    day = (str(day_time) + day_part)
+                )
                 t.save()
+                print(t.slug)
                 pk += 1
-    return redirect('/')
 
 
 def set_department():
@@ -137,6 +162,21 @@ def lander(request):
     return render(
         request,
         # url
-        "",
+        "stanbyPage",
         context
     )
+
+
+def init():
+    if fist:
+        set_department()
+        print("initalizing")
+        try:
+            pass
+        except:
+            pass
+        try:
+            set_time_table()
+        except:
+            pass
+        set_lecture()
