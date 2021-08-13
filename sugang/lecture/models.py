@@ -36,7 +36,6 @@ class Lecture(models.Model):
 class CustomUser(models.Model):
     credit = models.PositiveIntegerField(default=0)
     name = models.CharField(max_length=100)
-    time = models.ManyToManyField(Time, blank=True, null=True)
     lecture = models.ManyToManyField(Lecture, blank=True, null=True)
     department = models.ForeignKey(
         Department, on_delete=models.CASCADE, blank=True, null=True)
