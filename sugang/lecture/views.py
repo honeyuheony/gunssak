@@ -5,6 +5,8 @@ import pandas as pd
 
 
 # Create your views here.
+
+
 def set_time_table():
     weeks = ['월', '화', '수', '목', '금']
     day_times = range(1, 10)
@@ -41,34 +43,15 @@ def set_department():
         department.save()
 
 
-
-
-def set_department_table():
-    department = ['메카트로닉스공학부', '교양학부', 'HRD학과', ]
-
-
 def get_users_timetable(request):
     user = request.user
     while user.credit > 18:
         lecture = Lecture.objects.filter(
             Q(max_user__gt=current_user) &
-            Q(department__slug__exact=user.department)
+            Q(department__slug__exact=current_user.department)
         ).order_by("?")
-        if lecture.count() > 0:
-            if user.credit + lecture.credit < 21:
-                if not lecture in user.lecture:
-                    user.lecture.add(lecture)
-                    lecture.current_user += 1
-        else:
-            break
+        if user.credit + lecture.credit < 21:
+            if not lecture in user.lecture:
+                user.lecture.add(lecture)
+                lecture.current_user += 1
     user.save()
-    return redirect('/')
-
-
-def set_lecture_all_zero(request):
-    lectures = Lecture.objects.iterator()
-    for lecture in lectures:
-        lecture.current_user = 0
-        lecture.save()
-    return redirect('/')
-
