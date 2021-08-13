@@ -18,3 +18,12 @@ def set_department_table():
 
 def read_exel():
     df = pd.read_exel()
+
+
+def stanbyPage(request):
+
+    return render(request, "stanbyPage") 
+
+def countDown(request):
+
+    return render(request, "countDown")
