@@ -1,3 +1,4 @@
+from django.utils.text import slugify
 from django.shortcuts import render
 from django.db.models import Q
 from lecture.models import *
@@ -18,7 +19,8 @@ def set_time_table():
                 t = Time.objects.create()
                 t.week = week
                 t.day = (day_time + day_part)
-                t.slug = slugify(pk)
+                slug = week + day_time + day_part
+                t.slug = slugify(slug, allow_unicode=True)
                 t.save()
                 pk += 1
     return redirect('/')
@@ -55,3 +57,5 @@ def get_users_timetable(request):
                 user.lecture.add(lecture)
                 lecture.current_user += 1
     user.save()
+    
+    
