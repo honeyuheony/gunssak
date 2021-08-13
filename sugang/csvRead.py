@@ -42,7 +42,7 @@ with open(CSV_PATH, newline='') as csvfile:  # 4. newline =''
                 day.remove(dayStart[1:3] + "A")
             if dayEnd[3:4] == "A":
                 day.remove(dayEnd[1:3] + "B")
-        Lecture.objects.create(
+        lecture = Lecture.objects.create(
             name=row['name'],
             code=row['code'],
             semester=row['semester'],
@@ -55,3 +55,8 @@ with open(CSV_PATH, newline='') as csvfile:  # 4. newline =''
 
             # 6
         )
+
+        for d in day:
+            time = Time.objects.get(slug=d)
+            lecture.time.add(time)
+
