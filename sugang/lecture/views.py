@@ -1,12 +1,49 @@
-from django.utils.text import slugify
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import Q
-from lecture.models import *
+from .models import Lecture, Time, Department, CustomUser
 import pandas as pd
 import numpy as np
+from django.utils.text import slugify
 
+import csv
 
+CSV_PATH = './data.csv'  # 3. csv 파일 경로
 # Create your views here.
+with open(CSV_PATH, newline='') as csvfile:  # 4. newline =''
+    data_reader = csv.DictReader(csvfile)
+    day = []
+    for row in data_reader:
+        time = row['time']
+        time = time.split(",")
+        dayStart = ""
+        dayEnd = ""
+        for t in time:
+            dayStart = t[0:1] + t[1:3]
+            dayEnd = t[0:1] + t[5:7]
+            for i in range(int(dayStart[1:3]), int(dayEnd[1:3] + 1)):
+                day.append(i + "A")
+                day.append(i + "B")
+            if dayStart[3:4] == "B":
+                day.remove(dayStart[1:3] + "A")
+            if dayEnd[3:4] == "A":
+                day.remove(dayEnd[1:3] + "B")
+        lecture = Lecture.objects.create(
+            name=row['name'],
+            code=row['code'],
+            semester=row['semester'],
+            department=row['department'],
+            division=row['division'],
+            credit=row['credit'],
+            time=row['time'],
+            capacity=row['capacity'],
+            grade=row['grade']
+
+            # 6
+        )
+
+        for d in day:
+            time = Time.objects.get(slug=d)
+            lecture.time.add(time)
 
 
 def set_time_table():
@@ -15,7 +52,7 @@ def set_time_table():
     day_parts = ['A', 'B']
     pk = 1
     for week in weeks:
-        for day_time in day_tiems:
+        for day_time in day_times:
             for day_part in day_parts:
                 t = Time.objects.create()
                 t.week = week
@@ -44,6 +81,14 @@ def set_department():
         department.name = d
         department.slug = slugify(pk)
         department.save()
+ 
+def stanbyPage(request):
+
+    return render(request, "stanbyPage") 
+
+def countDown(request):
+
+    return render(request, "countDown")
 
 
 def set_users_timetable(request):
